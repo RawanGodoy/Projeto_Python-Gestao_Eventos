@@ -42,7 +42,18 @@ def criar():
     print(f'Registro criado: {registro}')
 #Listar
 def listar():
-    print("Listar")
+    base = carregar()
+    
+    if not base:
+        print('Nenhum evento encontrado.')
+        return
+
+    print('\n Eventos Cadastrados ')
+    for evento in base:
+        id = evento["id"]
+        nome = evento["evento"]
+        data = evento["data"]
+        print(f'ID: {id} | Nome: {nome} | Data: {data}')
 #Atualizar
 def atualizar():
     print("Atualizar")
