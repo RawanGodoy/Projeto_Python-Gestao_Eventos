@@ -1,6 +1,6 @@
 #BIBLIOTECAS
 import json
-import re
+from datetime import datetime
 
 #arquivo Json
 arquivo = "dados/eventos.json"
@@ -19,10 +19,6 @@ def carregar():
         return []
     
 #Solicitação de data no formato correto
-from datetime import datetime
-
-from datetime import datetime
-
 def solicitar_data():
     while True:
         data = input("Digite a data no formato dd/mm/aa: ")
@@ -34,7 +30,7 @@ def solicitar_data():
         except ValueError:
             print("Data inválida. Tente novamente.")
             
-#CRIAR REGISTROS
+#Criar registros
 def criar():
     base = carregar()
     proximo_id = max((r['id'] for r in base), default = 0) + 1
@@ -44,17 +40,30 @@ def criar():
     base.append(registro) 
     salvar(base)
     print(f'Registro criado: {registro}')
-    
-def deletar():
-    print("deletar")
-def pesquisar():
-    print("pesquisar")
+#Listar
 def listar():
     print("Listar")
+#Atualizar
 def atualizar():
     print("Atualizar")
+#Delete
+def deletar():
+    base = carregar()
+    try:
+        id_delete = int(input("Digite o ID do evento a ser deletado: "))
+        base_nova = [r for r in base if r['id'] != id_delete]
+        if len(base_nova) == len(base):
+            print("ID não encontrado.")
+        else:
+            salvar(base_nova)
+            print("Registro deletado com sucesso.")
+    except ValueError:
+        print("ID inválido. Tente novamente.")
+#Pesquisa
+def pesquisar():
+    print("pesquisar")
     
-    
+#Menu
 def menu():
     actions = {
         '1': criar,
