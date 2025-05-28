@@ -29,6 +29,15 @@ def solicitar_data():
             return data_valida.strftime("%d/%m/%y")
         except ValueError:
             print("Data inválida. Tente novamente.")
+def solicitar_horario():
+    while True:
+        horario = input("Digite o horário no formato HH:MM (24h): ")
+        try:
+            horario_valido = datetime.strptime(horario, "%H:%M")
+            print("Horário válido:", horario_valido.strftime("%H:%M"))
+            return horario_valido.strftime("%H:%M")
+        except ValueError:
+            print("Horário inválido. Tente novamente.")
             
 #Criar registros
 def criar():
@@ -36,7 +45,12 @@ def criar():
     proximo_id = max((r['id'] for r in base), default = 0) + 1
     evento = input('Digite o nome do evento: ').strip(' ')
     data = solicitar_data()
-    registro = {'id': proximo_id, 'evento': evento,'data': data}
+    print("Digite o horário de início do evento:")
+    horario_inicio = solicitar_horario()
+    print("Digite o horário de término:")
+    horario_fim = solicitar_horario()
+    local = input("Qual o local do evento? ")
+    registro = {'id': proximo_id, 'evento': evento,'data': data,'hora_inicio':horario_inicio,'hora_fim':horario_fim,'local':local}
     base.append(registro) 
     salvar(base)
     print(f'Registro criado: {registro}')
@@ -56,7 +70,30 @@ def listar():
         print(f'ID: {id} | Nome: {nome} | Data: {data}')
 #Atualizar
 def atualizar():
-    print("Atualizar")
+    base = carregar()
+    try:
+        id_escolhido = int(input("Digite o ID do evento que deseja atualizar: "))
+        for evento in base:
+            if evento['id'] == id_escolhido:
+                print(f"\nEvento atual: {evento['evento']} | Data atual: {evento['data']}")
+                
+                novo_nome = input("Novo nome do evento (Digite (n) para manter o nome): ").strip()
+                if novo_nome != "n" or novo_nome != "N":
+                    evento['evento'] = novo_nome
+                
+                mudar_data = input("Deseja alterar a data? (s/n): ").strip()
+                if mudar_data == 's' or mudar_data == "S":
+                    nova_data = solicitar_data()
+                    evento['data'] = nova_data
+                
+                print(f"\nNome do evento atualizado: {evento['evento']} | Data atualizada: {evento['data']} \n")
+                salvar(base)
+                return
+        
+        print("Evento com este ID não foi encontrado.")
+    except ValueError:
+        print("ID inválido. Tente novamente.")
+
 #Delete
 def deletar():
     base = carregar()
