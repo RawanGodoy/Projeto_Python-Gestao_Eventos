@@ -67,7 +67,10 @@ def listar():
         id = evento["id"]
         nome = evento["evento"]
         data = evento["data"]
-        print(f'ID: {id} | Nome: {nome} | Data: {data}')
+        horario_inicio = evento["hora_inicio"]
+        horario_fim = evento["hora_fim"]
+        local = evento["local"]
+        print(f'ID: {id} | Nome: {nome} | Data: {data} | Horário de início : {horario_inicio} | Horário de fim : {horario_fim} | Local : {local}')
 #Atualizar
 def atualizar():
     base = carregar()
@@ -77,39 +80,87 @@ def atualizar():
             if evento['id'] == id_escolhido:
                 print(f"\nEvento atual: {evento['evento']} | Data atual: {evento['data']}")
                 
-                novo_nome = input("Novo nome do evento (Digite (n) para manter o nome): ").strip()
-                if novo_nome != "n" or novo_nome != "N":
+                novo_nome = input("Novo nome do evento (Digite (N) para manter o nome): ").strip()
+                if novo_nome != "n" and novo_nome != "N":
                     evento['evento'] = novo_nome
                 
-                mudar_data = input("Deseja alterar a data? (s/n): ").strip()
+                mudar_data = input("Deseja alterar a data? (S/N): ").strip()
                 if mudar_data == 's' or mudar_data == "S":
                     nova_data = solicitar_data()
                     evento['data'] = nova_data
+
+                opcao = input("Deseja alterar o horário inicial? Digite (N) para manter o horário inicial: ")
+                if opcao != 'N' and opcao != 'n':
+                    nova_hora = solicitar_horario()
+                    evento['hora_inicio'] = nova_hora
                 
-                print(f"\nNome do evento atualizado: {evento['evento']} | Data atualizada: {evento['data']} \n")
+                opcao2 = input("Deseja alterar o horário final? Digite (N) para manter o horário final: ")
+                if opcao2 != 'N' and opcao2 != 'n':
+                    nova_hora2 = solicitar_horario()
+                    evento['hora_fim'] = nova_hora2
+
+                opcao3 = input("Deseja alterar o local do evento? Digite (N) para manter o local: ")
+                if opcao3 != 'N' and opcao3 != 'n':
+                    novo_local = input("Qual o local do evento? ")
+                    evento['local'] = novo_local
+
+                
+                print(f"\n    Nome do evento atualizado: {evento['evento']} | Data atualizada: {evento['data']}\n| Horário inicial atualizado: {evento['hora_inicio']} | Horário final atualizado: {evento['hora_fim']} | Local atualizado: {evento['local']} \n")
                 salvar(base)
                 return
         
         print("Evento com este ID não foi encontrado.")
     except ValueError:
         print("ID inválido. Tente novamente.")
-
 #Delete
 def deletar():
     base = carregar()
+    
+    if not base:
+        print("Não há registros para deletar. Volte para o inicio.")
+        return
+
+    listar()
+    
+    ids_input = input("Digite os IDs dos eventos a serem deletados (caso queira deletar mais de um ID separare por vírgula): ")
+    
     try:
-        id_delete = int(input("Digite o ID do evento a ser deletado: "))
-        base_nova = [r for r in base if r['id'] != id_delete]
-        if len(base_nova) == len(base):
-            print("ID não encontrado.")
+        ids_a_deletar = set(int(i.strip()) for i in ids_input.split(",") if i.strip().isdigit())
+
+        if not ids_a_deletar:
+            print("Nenhum ID válido fornecido.")
+            return
+
+        base_nova = [r for r in base if r['id'] not in ids_a_deletar]
+        deletados = len(base) - len(base_nova)
+
+        if deletados == 0:
+            print("Nenhum dos IDs fornecidos foi encontrado.")
         else:
             salvar(base_nova)
-            print("Registro deletado com sucesso.")
+            print(f"{deletados} registros deletados com sucesso.")
+            
     except ValueError:
-        print("ID inválido. Tente novamente.")
+        print("Erro: certifique-se de digitar apenas números inteiros separados por vírgula.")
+
 #Pesquisa
 def pesquisar():
-    print("pesquisar")
+    base = carregar()
+    
+    if not base:
+        print("Não há registros para pesquisar.")
+        return
+
+    try:
+        id_busca = int(input("Digite o ID do evento que deseja buscar: "))
+        for r in base:
+            if r['id'] == id_busca:
+                print("\n=== Evento Encontrado ===")
+                print(f"ID: {r['id']} | Evento: {r['evento']} | Data: {r['data']} | Início: {r['hora_inicio']} | Término: {r['hora_fim']} | Local: {r['local']}")
+                return
+        print("ID não encontrado.")
+    except ValueError:
+        print("ID inválido. Digite um número inteiro.")
     
 #Menu
 def menu():
@@ -138,3 +189,4 @@ def menu():
             print('Opção inválida, tente novamente.')
 #INICIAR MENU
 menu()
+      
