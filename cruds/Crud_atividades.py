@@ -1,0 +1,1 @@
+#Crud focado nas atividades dos eventos
