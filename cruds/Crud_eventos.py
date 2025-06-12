@@ -162,31 +162,36 @@ def pesquisar():
     except ValueError:
         print("ID inválido. Digite um número inteiro.")
     
-#Menu
-def menu():
-    actions = {
-        '1': criar,
-        '2': listar,
-        '3': atualizar,
-        '4': deletar,
-        '5': pesquisar,
-        '6': exit
-    }
-    while True:
-        print('''
-\n==== MENU CRUD JSON ====
-        1. Criar
-        2. Listar
-        3. Atualizar
-        4. Deletar
-        5. Pesquisa específica
-        6. Sair''')
-        escolha = input('Escolha uma opção: ')
-        opcao = actions.get(escolha)
-        if opcao:
-            opcao()
-        else:
-            print('Opção inválida, tente novamente.')
-#INICIAR MENU
-menu()
-      
+# #Menu
+# def menu():
+#     actions = {
+#         '1': criar,
+#         '2': listar,
+#         '3': atualizar,
+#         '4': deletar,
+#         '5': pesquisar,
+#         '6': exit
+#     }
+#     while True:
+#         print('''
+# \n==== MENU CRUD JSON ====
+#         1. Criar
+#         2. Listar
+#         3. Atualizar
+#         4. Deletar
+#         5. Pesquisa específica
+#         6. Sair''')
+#         escolha = input('Escolha uma opção: ')
+#         opcao = actions.get(escolha)
+#         if opcao:
+#             opcao()
+#         else:
+#             print('Opção inválida, tente novamente.')
+#INICIAR MENU   
+if __name__ == "__main__":
+    # menu()
+    pesquisar()
+    deletar()
+    criar()
+    atualizar()
+    listar()
