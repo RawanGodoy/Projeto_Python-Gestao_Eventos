@@ -1,15 +1,15 @@
-#BIBLIOTECAS
+
 import json
 from datetime import datetime
 from colorama import Fore as fr
-#arquivo Json
+
 arquivo = "dados/eventos.json"
-#SALVAR A BASE (INPUT)
+
 def salvar(base):
     with open(arquivo,'w',encoding = 'utf-8') as f:
         json.dump(base, f, indent = 4, ensure_ascii = False)
         
-#CARREGAR A BASE (OUTPUT)
+
 def carregar():
     try:
         with open(arquivo,"r") as f:
@@ -18,12 +18,12 @@ def carregar():
     except FileNotFoundError:
         return []
     
-#Solicitação de data no formato correto
+
 def solicitar_data():
     while True:
         data = input("DIGITE A DATA NO FORMATO DD/MM/AA: ")
         try:
-            # Tenta converter para datetime
+
             data_valida = datetime.strptime(data, "%d/%m/%y")
             print("Data válida:", data_valida.strftime("%d/%m/%y"))
             return data_valida.strftime("%d/%m/%y")
@@ -38,8 +38,7 @@ def solicitar_horario():
             return horario_valido.strftime("%H:%M")
         except ValueError:
             print(fr.RED+"HORÁRIO INVÁLIDO, TENTE NOVAMENTE."+fr.BLUE)
-            
-#Criar registros
+
 def criar():
     base = carregar()
     proximo_id = max((r['id'] for r in base), default = 0) + 1
@@ -64,7 +63,6 @@ def criar():
     base.append(registro) 
     salvar(base)
     print(f'Registro criado: {registro}')
-#Listar
 def listar():
     base = carregar()
     
@@ -88,7 +86,7 @@ def listar():
                 INÍCIO | {horario_inicio}
                 FIM    | {horario_fim}
                 LOCAL  | {local}"""+fr.BLUE)
-#Atualizar
+
 def atualizar():
     base = carregar()
     encontrou = False
@@ -176,7 +174,7 @@ def atualizar():
             print(fr.RED+"EVENTO NÃO ENCONTRADO."+fr.BLUE)
     except ValueError:
         print(fr.RED+"ID INVÁLIDO. TENTE NOVAMENTE."+fr.BLUE)
-#Delete
+
 def deletar():
     base = carregar()
     
@@ -207,7 +205,7 @@ def deletar():
     except ValueError:
         print(fr.RED+"ERRO: CERTIFIQUE-SE DE DIGITAR APENAS NÚMEROS INTEIROS SEPARADOS POR VÍRGULA."+fr.BLUE)
 
-#Pesquisa
+
 def pesquisar():
     base = carregar()
     

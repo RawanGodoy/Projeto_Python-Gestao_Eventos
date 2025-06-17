@@ -7,12 +7,10 @@ arquivogeral = 'dados/participantes.json'
 arquivoid = 'dados/eventos.json'
 
 
-#Criei a função de salvar o arquivo no json
 def salvar(basearquivo):
     with open(arquivogeral, 'w', encoding='utf-8') as adicionar:
         json.dump(basearquivo,adicionar,indent=4,ensure_ascii=False)
 
-#Defini a função para ler o arquivo
 def leitura():
     with open(arquivogeral,'r') as elementos:
         try: 
@@ -21,7 +19,6 @@ def leitura():
         except FileNotFoundError:
             return[]
 
-#Defino a função de leitura do json do outro crud, o crud de eventos, irei precisar acessar o json para buscar o ID que o usuário pesquisar
 def leitura2():
     with open(arquivoid,'r') as elementos:
         try: 
@@ -29,8 +26,6 @@ def leitura2():
             return leitura2
         except FileNotFoundError:
             return[]
-
-#Criei a função para cadastrar o arquivo
 
 def criar():
     base = leitura()
@@ -52,8 +47,6 @@ def criar():
                 print(fr.GREEN+"(IDADE CADASTRADA...)"+fr.YELLOW)
                 break
         print(fr.RED+"(ERROR!) DIGITE A IDADE EM FORMA DE NÚMERO E INTEIRO E MAIOR QUE 0..."+fr.YELLOW)
-    
-
     
     while True:
         cidademorada = input(fr.YELLOW+"DIGITE A CIDADE DE MORADA DO PARTICIPANTE: ").title().replace(" ","")
@@ -110,7 +103,7 @@ def criar():
     print(fr.GREEN+'''
          <CADASTRO REALIZADO COM SUCESSO>
 '''+fr.YELLOW)
-#Atualização dos dados do participante 
+
 def atualizar():
     print()
     base = leitura()
@@ -118,7 +111,7 @@ def atualizar():
         print(fr.RED+"NENHUM PARTICIPANTE CADASTRADO PARA ATUALIZAR.")
         input("PRESSIONE ENTER PARA CONTINUAR..."+fr.YELLOW)
         return
-    #Enviar para gody
+
     while True:
             cpf_busca = input("DIGITE O CPF DO PARTICIPANTE QUE DESEJA ATUALIZAR: ").strip()
             if cpf_busca.isdigit() and len(cpf_busca) == 11:
@@ -132,7 +125,6 @@ def atualizar():
         if participante.get('cpf') == cpf_busca:
             encontrado = True
             print(f"\nPARTICIPANTE ENCONTRADO: {participante['nome']} (CPF: {participante['cpf']})")
-            
             
             made_changes = False
 
@@ -241,9 +233,6 @@ def atualizar():
     
     input(fr.GREEN+"Pressione Enter para continuar...+fr.YELLOW")
 
-
-
-#Visualização dos participantes
 def listar():
     i = 0
     base = leitura()
@@ -268,8 +257,6 @@ def listar():
               CPF       | {cpf}
               GÊNERO    | {genero}"""+fr.YELLOW)
 
-
-#Exclusão dos participantes
 def deletar():
     base = leitura()
     if not base:
@@ -290,7 +277,6 @@ def deletar():
     
     input(fr.GREEN+"PARA VOLTAR AO MENU, PRESSIONE A TECLA ENTER."+fr.YELLOW)
 
-#Pesquisar participante
 def pesquisar():
     base = leitura()
     

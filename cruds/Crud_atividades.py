@@ -1,16 +1,14 @@
-#Crud focado nas atividades dos eventos
 import json
 from colorama import Fore as fr
-#arquivo Json das atividades
+
 arquivo_atividades = "dados/atividades.json"
 arquivo_eventos = "dados/eventos.json"
 
-#salvar a base
+
 def salvar(base):
     with open(arquivo_atividades,'w',encoding = 'utf-8') as f:
         json.dump(base, f, indent = 4, ensure_ascii = False)
         
-#carregar base
 def carregar():
     try:
         with open(arquivo_atividades,"r") as f:
@@ -18,10 +16,7 @@ def carregar():
             return registros
     except FileNotFoundError:
         return []
-    
-#codigo
 
-# cadastro
 def criar():
     atividades = carregar()
     try:
@@ -31,14 +26,13 @@ def criar():
         print(fr.RED+"ARQUIVO DE EVENTOS NÃO ENCONTRADO EM '" + arquivo_eventos + "'. CRIE UM EVENTO PRIMEIRO."+fr.CYAN)
         return
 
-    # obter e validar o ID do evento
     while True:
         try:
             id_evento_str = input("DIGITE O ID DO EVENTO PARA VINCULAR A ATIVIDADE: ")
             id_evento = int(id_evento_str)
             
             if any(evento['id'] == id_evento for evento in eventos):
-                break # Evento existe, podemos prosseguir para a próxima validação
+                break
             else:
                 print(fr.RED+"ERRO: NENHUM EVENTO ENCONTRADO COM ESTE ID. TENTE NOVAMENTE."+fr.CYAN)
         except ValueError:
@@ -51,10 +45,7 @@ def criar():
             print("UM EVENTO SÓ PODE TER UMA ATIVIDADE.")
             print(" PARA MODIFICAR A ATIVIDADE EXISTENTE, POR FAVOR, VOLTE AO MENU E ESCOLHA A OPÇÃO '3. ATUALIZAR'."+fr.CYAN)
             return 
-        #interrompe o cadastro imediatamente
-    
 
-    #aqui fala se passou na validação, pede os detalhes da nova atividade
     while True:
         tipo_atividade = input("DIGITE O TIPO DA ATIVIDADE (EX: PALESTRA, OFICINA): ").strip()
         if tipo_atividade.isalpha():
@@ -67,7 +58,6 @@ def criar():
             break
         print(fr.RED+"A DESCRIÇÃO DEVE CONTER NO MINIMO 10 CARACTERES..."+fr.CYAN)
 
-    #cria e salva a nova atividade
     proximo_id = max((a.get('id_atividade', 0) for a in atividades), default=0) + 1
     nova_atividade = {
         'id_atividade': proximo_id,
@@ -86,7 +76,7 @@ def criar():
     print(f"TIPO: {nova_atividade['tipo']}")
     print(f"DESCRIÇÃO: {nova_atividade['descricao']}")
     print("-------------------------------------"+fr.CYAN)
-# atualizar
+
 def atualizar():
     atividades = carregar()
     if not atividades:
@@ -125,7 +115,6 @@ def atualizar():
 
     print(fr.RED+f"\nNENHUMA ATIVIDADE ENCONTRADA COM O ID {id_atividade}."+fr.CYAN)
 
-# visualizar
 def listar():
     atividades = carregar()
     if not atividades:
@@ -139,7 +128,6 @@ def listar():
         print(f"ID DO EVENTO: {atividade['id_evento']} | ID DA ATIVIDADE: {atividade['id_atividade']} | TIPO: {atividade['tipo']} | DESCRIÇÃO: {atividade['descricao']}")
     print("-------------------------------------------------"+fr.CYAN)
 
-# excluir
 def deletar():
     atividades = carregar()
     if not atividades:
@@ -160,7 +148,7 @@ def deletar():
         print(fr.GREEN+"\nATIVIDADE EXCLUÍDA COM SUCESSO!"+fr.CYAN)
     else:
         print(fr.RED+"ATIVIDADE COM O ID INFORMADO NÃO ENCONTRADA."+fr.CYAN)
-# pesquisar
+
 def pesquisar():
     base = carregar()
     try:
