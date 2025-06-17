@@ -1,26 +1,10 @@
 [
     {
-        "idevento": 1,
-        "nome": "teste",
-        "idade": "12",
-        "cidade": "sbu",
-        "cpf": "1234",
+        "idevento": 2,
+        "nome": "Godoy",
+        "idade": 19,
+        "cidade": "SãoBentoDoUna",
+        "cpf": 12345678910,
         "genero": "Masculino"
-    },
-    {
-        "idevento": 1,
-        "nome": "teste",
-        "idade": "12",
-        "cidade": "sss",
-        "cpf": "12345",
-        "genero": "Feminino"
-    },
-    {
-        "idevento": 1,
-        "nome": "Teste1",
-        "idade": 12,
-        "cidade": "sbu",
-        "cpf": "123456",
-        "genero": "Feminino"
     }
 ]

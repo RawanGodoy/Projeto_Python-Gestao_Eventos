@@ -1,14 +1,1 @@
-[
-    {
-        "id_atividade": 1,
-        "id_evento": 1,
-        "tipo": "Palestra",
-        "descricao": "Palestra com expecialista"
-    },
-    {
-        "id_atividade": 2,
-        "id_evento": 2,
-        "tipo": "Corrida",
-        "descricao": "corrida para coletar bens"
-    }
-]
+[]

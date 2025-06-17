@@ -1,7 +1,7 @@
 #BIBLIOTECAS
 import json
 from datetime import datetime
-
+from colorama import Fore as fr
 #arquivo Json
 arquivo = "dados/eventos.json"
 #SALVAR A BASE (INPUT)
@@ -21,35 +21,45 @@ def carregar():
 #Solicitação de data no formato correto
 def solicitar_data():
     while True:
-        data = input("Digite a data no formato dd/mm/aa: ")
+        data = input("DIGITE A DATA NO FORMATO DD/MM/AA: ")
         try:
             # Tenta converter para datetime
             data_valida = datetime.strptime(data, "%d/%m/%y")
             print("Data válida:", data_valida.strftime("%d/%m/%y"))
             return data_valida.strftime("%d/%m/%y")
         except ValueError:
-            print("Data inválida. Tente novamente.")
+            print(fr.RED+"DATA INVÁLIDA, TENTE NOVAMENTE."+fr.BLUE)
 def solicitar_horario():
     while True:
-        horario = input("Digite o horário no formato HH:MM (24h): ")
+        horario = input("(FORMATO HH:MM): ")
         try:
             horario_valido = datetime.strptime(horario, "%H:%M")
-            print("Horário válido:", horario_valido.strftime("%H:%M"))
+            print(fr.GREEN+"Horário válido:", horario_valido.strftime("%H:%M")+fr.BLUE)
             return horario_valido.strftime("%H:%M")
         except ValueError:
-            print("Horário inválido. Tente novamente.")
+            print(fr.RED+"HORÁRIO INVÁLIDO, TENTE NOVAMENTE."+fr.BLUE)
             
 #Criar registros
 def criar():
     base = carregar()
     proximo_id = max((r['id'] for r in base), default = 0) + 1
-    evento = input('Digite o nome do evento: ').strip(' ')
+    evento = input('DIGITE O NOME DO EVENTO: ').strip()
+    print(fr.GREEN+"CADASTRADO COM SUCESSO!"+fr.BLUE)
     data = solicitar_data()
-    print("Digite o horário de início do evento:")
+    print(fr.GREEN+"CADASTRADO COM SUCESSO!"+fr.BLUE)
+    print("DIGITE O HORÁRIO DE INÍCIO DO EVENTO: ")
     horario_inicio = solicitar_horario()
-    print("Digite o horário de término:")
+    print(fr.GREEN+"CADASTRADO COM SUCESSO!"+fr.BLUE)
+    print("DIGITE O HORÁRIO DE TÉRMINO DO EVENTO: ")
     horario_fim = solicitar_horario()
-    local = input("Qual o local do evento? ")
+    print(fr.GREEN+"CADASTRADO COM SUCESSO!"+fr.BLUE)
+    while True:
+        local = input("DIGITE O LOCAL DO EVENTO: ").title().replace(" ","")
+        if not local.isalpha():
+            print(fr.RED+"O LOCAL DO EVENTO NÃO PODE CONTER NÚMEROS."+fr.BLUE)
+        else:
+            print(fr.GREEN+"CADASTRADO COM SUCESSO!"+fr.BLUE)
+            break
     registro = {'id': proximo_id, 'evento': evento,'data': data,'hora_inicio':horario_inicio,'hora_fim':horario_fim,'local':local}
     base.append(registro) 
     salvar(base)
@@ -59,10 +69,10 @@ def listar():
     base = carregar()
     
     if not base:
-        print('Nenhum evento encontrado.')
+        print(fr.RED+"NENHUM EVENTO ENCONTRADO"+fr.BLUE)
         return
 
-    print('\n Eventos Cadastrados ')
+    print(fr.GREEN+"EVENTOS CADASTRADOS:\n")
     for evento in base:
         id = evento["id"]
         nome = evento["evento"]
@@ -70,126 +80,159 @@ def listar():
         horario_inicio = evento["hora_inicio"]
         horario_fim = evento["hora_fim"]
         local = evento["local"]
-        print(f'ID: {id} | Nome: {nome} | Data: {data} | Horário de início : {horario_inicio} | Horário de fim : {horario_fim} | Local : {local}')
+        print(fr.GREEN+f"""
+                ---------------------------
+                ID     | {id}
+                NOME   | {nome}
+                DATA   | {data}
+                INÍCIO | {horario_inicio}
+                FIM    | {horario_fim}
+                LOCAL  | {local}"""+fr.BLUE)
 #Atualizar
 def atualizar():
     base = carregar()
+    encontrou = False
     try:
-        id_escolhido = int(input("Digite o ID do evento que deseja atualizar: "))
+        id_escolhido = int(input("DIGITE O ID DO EVENTO QUE DESEJA ATUALIZAR: "))
         for evento in base:
             if evento['id'] == id_escolhido:
-                print(f"\nEvento atual: {evento['evento']} | Data atual: {evento['data']}")
+                print(fr.GREEN+f"""
+                == DADOS ATUAIS DO EVENTO ==
+                NOME   | {evento['evento']}
+                DATA   | {evento['data']}
+                INÍCIO | {evento['hora_inicio']}
+                FIM    | {evento['hora_fim']}
+                LOCAL  | {evento['local']}"""+fr.BLUE)
+                encontrou = True
                 
-                novo_nome = input("Novo nome do evento (Digite (N) para manter o nome): ").strip()
-                if novo_nome != "n" and novo_nome != "N":
-                    evento['evento'] = novo_nome
-                
-                mudar_data = input("Deseja alterar a data? (S/N): ").strip()
-                if mudar_data == 's' or mudar_data == "S":
-                    nova_data = solicitar_data()
-                    evento['data'] = nova_data
+                mudar_nome = input('Deseja mudar o nome? (S/N): ').strip().upper()
+                while True:
+                    if mudar_nome == 'S':
+                        novo_nome = input("Novo nome do evento: ").strip() or evento['evento']
+                        evento['evento'] = novo_nome
+                        break
+                    elif mudar_nome == 'N':
+                        break
+                    else:
+                        print(fr.RED+"Opção inválida."+fr.BLUE)
+                        mudar_nome = input('Deseja mudar o nome? (S/N): ').strip().upper()       
+                mudar_data = input("Deseja alterar a data? (S/N): ").strip().upper()
+                while True:
+                    if mudar_data == "S":
+                        nova_data = solicitar_data()
+                        evento['data'] = nova_data
+                        break
+                    elif mudar_data == "N":
+                        break
+                    else:
+                        print(fr.RED+"Opção inválida."+fr.BLUE)
+                        mudar_data = input("Deseja alterar a data? (S/N): ").strip().upper()
 
-                opcao = input("Deseja alterar o horário inicial? Digite (N) para manter o horário inicial: ")
-                if opcao != 'N' and opcao != 'n':
-                    nova_hora = solicitar_horario()
-                    evento['hora_inicio'] = nova_hora
-                
-                opcao2 = input("Deseja alterar o horário final? Digite (N) para manter o horário final: ")
-                if opcao2 != 'N' and opcao2 != 'n':
-                    nova_hora2 = solicitar_horario()
-                    evento['hora_fim'] = nova_hora2
+                mudar_hora1 = input("Deseja alterar o horário inicial? (S/N): ").strip().upper()
+                while True:
+                    if mudar_hora1 == 'S':
+                        nova_hora = solicitar_horario()
+                        evento['hora_inicio'] = nova_hora
+                        break
+                    elif mudar_hora1 == 'N':
+                        break
+                    else:
+                        print(fr.RED+"Opção inválida."+fr.BLUE)
+                        mudar_hora1 = input("Deseja alterar o horário inicial? (S/N): ").strip().upper()
+                    
+                mudar_hora2 = input("Deseja alterar o horário final? (S/N) ").strip().upper()
+                while True:
+                    if mudar_hora2 == 'S':
+                        nova_hora = solicitar_horario()
+                        evento['hora_inicio'] = nova_hora
+                        break
+                    elif mudar_hora2 == 'N':
+                        break
+                    else:
+                        print(fr.RED+"Opção inválida."+fr.BLUE)
+                        mudar_hora2 = input("Deseja alterar o horário inicial? (S/N): ").strip().upper()
 
-                opcao3 = input("Deseja alterar o local do evento? Digite (N) para manter o local: ")
-                if opcao3 != 'N' and opcao3 != 'n':
-                    novo_local = input("Qual o local do evento? ")
-                    evento['local'] = novo_local
-
-                
-                print(f"\n    Nome do evento atualizado: {evento['evento']} | Data atualizada: {evento['data']}\n| Horário inicial atualizado: {evento['hora_inicio']} | Horário final atualizado: {evento['hora_fim']} | Local atualizado: {evento['local']} \n")
+                mudar_local = input("Deseja alterar o local do evento? (S/N) ").strip().upper()
+                while True:
+                    if mudar_local == 'S':
+                        novo_local = input("Qual o local do evento? ")
+                        evento['local'] = novo_local
+                        break
+                    elif mudar_local == 'N':
+                        break
+                    else:
+                        print(fr.RED+"Opção inválida."+fr.BLUE)
+                        mudar_local =  input("Deseja alterar o local do evento? (S/N): ").strip().upper()
                 salvar(base)
+                print(fr.GREEN+f"""
+                == EVENTO ATUALIZADO ==
+                NOME   | {evento['evento']}
+                DATA   | {evento['data']}
+                INÍCIO | {evento['hora_inicio']}
+                FIM    | {evento['hora_fim']}
+                LOCAL  | {evento['local']}"""+fr.BLUE)
                 return
-        
-        print("Evento com este ID não foi encontrado.")
+        if not encontrou:
+            print(fr.RED+"EVENTO NÃO ENCONTRADO."+fr.BLUE)
     except ValueError:
-        print("ID inválido. Tente novamente.")
+        print(fr.RED+"ID INVÁLIDO. TENTE NOVAMENTE."+fr.BLUE)
 #Delete
 def deletar():
     base = carregar()
     
     if not base:
-        print("Não há registros para deletar. Volte para o inicio.")
+        print(fr.RED+"NÃO HÁ REGISTROS PARA DELETAR. VOLTANDO PARA O INÍCIO."+fr.BLUE)
         return
 
     listar()
     
-    ids_input = input("Digite os IDs dos eventos a serem deletados (caso queira deletar mais de um ID separare por vírgula): ")
+    ids_input = input("DIGITE O ID DE EVENTO QUE DESEJA DELETAR (caso queira deletar mais de um ID separare por vírgula): ")
     
     try:
         ids_a_deletar = set(int(i.strip()) for i in ids_input.split(",") if i.strip().isdigit())
 
         if not ids_a_deletar:
-            print("Nenhum ID válido fornecido.")
+            print(fr.RED+"NENHUM ID VÁLIDO FORNECIDO."+fr.BLUE)
             return
 
         base_nova = [r for r in base if r['id'] not in ids_a_deletar]
         deletados = len(base) - len(base_nova)
 
         if deletados == 0:
-            print("Nenhum dos IDs fornecidos foi encontrado.")
+            print(fr.RED+"NENHUM DOS IDS FORNECIDOS FORAM ENCONTRADOS."+fr.BLUE)
         else:
             salvar(base_nova)
-            print(f"{deletados} registros deletados com sucesso.")
+            print(fr.GREEN+f"{deletados} REGISTRO(S) DELETADO(S) COM SUCESSO."+fr.BLUE)
             
     except ValueError:
-        print("Erro: certifique-se de digitar apenas números inteiros separados por vírgula.")
+        print(fr.RED+"ERRO: CERTIFIQUE-SE DE DIGITAR APENAS NÚMEROS INTEIROS SEPARADOS POR VÍRGULA."+fr.BLUE)
 
 #Pesquisa
 def pesquisar():
     base = carregar()
     
     if not base:
-        print("Não há registros para pesquisar.")
+        print(fr.RED+"NÃO HÁ REGISTROS PARA PESQUISAR."+fr.BLUE)
         return
 
     try:
-        id_busca = int(input("Digite o ID do evento que deseja buscar: "))
+        id_busca = int(input("DIGITE O ID DO EVENTO QUE DESEJA BUSCAR: "))
         for r in base:
             if r['id'] == id_busca:
-                print("\n=== Evento Encontrado ===")
-                print(f"ID: {r['id']} | Evento: {r['evento']} | Data: {r['data']} | Início: {r['hora_inicio']} | Término: {r['hora_fim']} | Local: {r['local']}")
+                print(fr.GREEN+f"""
+                == EVENTO ENCONTRADO ==
+                ID     | {r['id']}
+                NOME   | {r['evento']}
+                DATA   | {r['data']}
+                INÍCIO | {r['hora_inicio']}
+                FIM    | {r['hora_fim']}
+                LOCAL  | {r['local']}"""+fr.BLUE)
                 return
-        print("ID não encontrado.")
+        print(fr.RED+"ID NÃO ENCONTRADO."+fr.BLUE)
     except ValueError:
-        print("ID inválido. Digite um número inteiro.")
-    
-# #Menu
-# def menu():
-#     actions = {
-#         '1': criar,
-#         '2': listar,
-#         '3': atualizar,
-#         '4': deletar,
-#         '5': pesquisar,
-#         '6': exit
-#     }
-#     while True:
-#         print('''
-# \n==== MENU CRUD JSON ====
-#         1. Criar
-#         2. Listar
-#         3. Atualizar
-#         4. Deletar
-#         5. Pesquisa específica
-#         6. Sair''')
-#         escolha = input('Escolha uma opção: ')
-#         opcao = actions.get(escolha)
-#         if opcao:
-#             opcao()
-#         else:
-#             print('Opção inválida, tente novamente.')
-#INICIAR MENU   
+        print(fr.RED+"ID INVÁLIDO. TENTE NOVAMENTE."+fr.BLUE)
+
 if __name__ == "__main__":
-    # menu()
     pesquisar()
     deletar()
     criar()
