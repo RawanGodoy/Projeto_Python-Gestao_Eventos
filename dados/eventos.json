@@ -1,18 +1,1 @@
-[
-    {
-        "id": 1,
-        "evento": "Corrida da galinha",
-        "data": "23/08/25",
-        "hora_inicio": "08:00",
-        "hora_fim": "19:00",
-        "local": "Parque"
-    },
-    {
-        "id": 2,
-        "evento": "Corrida",
-        "data": "12/08/25",
-        "hora_inicio": "12:00",
-        "hora_fim": "20:00",
-        "local": "SãoBentoDoUna"
-    }
-]
+[]
